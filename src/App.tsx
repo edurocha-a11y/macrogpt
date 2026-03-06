@@ -272,7 +272,7 @@ INSTRUCTIONS:
   return (
     <div className="min-h-screen bg-neutral-50 font-sans text-neutral-900 pb-20">
       {/* Header */}
-      <header className="bg-white border-b border-neutral-200 sticky top-0 z-10">
+      <header className="bg-white border-b border-neutral-200 sticky top-0 z-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center text-white shadow-sm">
@@ -424,100 +424,85 @@ INSTRUCTIONS:
             </div>
           )}
 
-          <div className="mb-4">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-neutral-100 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 text-orange-500 mb-2">
-                  <Flame size={20} />
-                  <span className="text-base font-medium">Calories</span>
+          <div className="mb-8 bg-white text-neutral-800 p-8 rounded-[2.5rem] shadow-sm border border-neutral-100 overflow-hidden relative">
+            {/* Background Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 to-transparent pointer-events-none"></div>
+            
+            <div className="relative z-10">
+              {/* Calorie Circle Section */}
+              <div className="flex items-center justify-between mb-10">
+                <div className="text-center flex-1">
+                  <span className="text-neutral-400 text-sm block mb-1">Eaten</span>
+                  <span className="text-2xl font-semibold">{totalCalories}</span>
                 </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-light tracking-tight">{totalCalories}</span>
-                  <span className="text-lg text-neutral-400">/ {goalCalories} kcal</span>
-                </div>
-              </div>
-              
-              <div className="flex-1 w-full">
-                <div className="flex justify-between items-center text-sm mb-2">
-                  <span className={`font-medium ${totalCalories > goalCalories ? 'text-red-500' : 'text-neutral-500'}`}>{Math.round(goalCalories > 0 ? (totalCalories / goalCalories) * 100 : 0)}%</span>
-                  <span className={totalCalories > goalCalories ? 'text-red-500 font-medium' : 'text-neutral-500'}>
-                    {totalCalories > goalCalories ? `${totalCalories - goalCalories} kcal over` : `${Math.max(0, goalCalories - totalCalories)} kcal left`}
-                  </span>
-                </div>
-                <div className="w-full bg-neutral-100 rounded-full h-3">
-                  <div className={`h-3 rounded-full transition-all ${totalCalories > goalCalories ? 'bg-red-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.6)]' : 'bg-orange-500'}`} style={{ width: `${Math.min(100, goalCalories > 0 ? (totalCalories / goalCalories) * 100 : 0)}%` }}></div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="grid grid-cols-3 gap-4">
-            <div className="bg-white p-5 rounded-2xl shadow-sm border border-neutral-100 flex flex-col">
-              <div className="flex items-center gap-2 text-rose-500 mb-3">
-                <Beef size={18} />
-                <span className="text-sm font-medium">Protein</span>
-              </div>
-              
-              <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-3xl font-light tracking-tight">{selectedTotals.protein}</span>
-                <span className="text-sm text-neutral-400">/ {goals.protein} g</span>
-              </div>
-              
-              <div className="w-full bg-neutral-100 rounded-full h-2 mb-2">
-                <div className={`h-2 rounded-full transition-all ${selectedTotals.protein > goals.protein ? 'bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.6)]' : 'bg-rose-500'}`} style={{ width: `${Math.min(100, goals.protein > 0 ? (selectedTotals.protein / goals.protein) * 100 : 0)}%` }}></div>
-              </div>
-              
-              <div className="flex justify-between items-center text-xs">
-                <span className={`font-medium ${selectedTotals.protein > goals.protein ? 'text-red-500' : 'text-neutral-500'}`}>{Math.round(goals.protein > 0 ? (selectedTotals.protein / goals.protein) * 100 : 0)}%</span>
-                <span className={selectedTotals.protein > goals.protein ? 'text-red-500 font-medium' : 'text-neutral-500'}>
-                  {selectedTotals.protein > goals.protein ? `${selectedTotals.protein - goals.protein}g over` : `${Math.max(0, goals.protein - selectedTotals.protein)}g left`}
-                </span>
-              </div>
-            </div>
+                <div className="relative flex flex-col items-center justify-center w-48 h-48 flex-shrink-0">
+                  {/* SVG Circle */}
+                  <svg className="w-full h-full -rotate-90 transform">
+                    <circle
+                      cx="96"
+                      cy="96"
+                      r="88"
+                      stroke="currentColor"
+                      strokeWidth="8"
+                      fill="transparent"
+                      className="text-neutral-100"
+                    />
+                    <circle
+                      cx="96"
+                      cy="96"
+                      r="88"
+                      stroke="currentColor"
+                      strokeWidth="8"
+                      fill="transparent"
+                      strokeDasharray={2 * Math.PI * 88}
+                      strokeDashoffset={2 * Math.PI * 88 * (1 - Math.min(1, totalCalories / goalCalories))}
+                      strokeLinecap="round"
+                      className={`${totalCalories > goalCalories ? 'text-red-500' : 'text-emerald-500'} transition-all duration-1000 ease-out`}
+                    />
+                  </svg>
+                  
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                    <span className="text-neutral-400 text-sm mb-1">Remaining</span>
+                    <span className={`text-4xl font-bold tracking-tight ${totalCalories > goalCalories ? 'text-red-500' : 'text-neutral-900'}`}>
+                      {Math.max(0, goalCalories - totalCalories)}
+                    </span>
+                    <span className="text-neutral-500 text-xs mt-1">Goal {goalCalories} kcal</span>
+                  </div>
+                </div>
 
-            <div className="bg-white p-5 rounded-2xl shadow-sm border border-neutral-100 flex flex-col">
-              <div className="flex items-center gap-2 text-amber-500 mb-3">
-                <Wheat size={18} />
-                <span className="text-sm font-medium">Carbs</span>
+                <div className="text-center flex-1">
+                  <span className="text-neutral-400 text-sm block mb-1">Burned</span>
+                  <span className="text-2xl font-semibold text-neutral-300">0</span>
+                </div>
               </div>
-              
-              <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-3xl font-light tracking-tight">{selectedTotals.carbs}</span>
-                <span className="text-sm text-neutral-400">/ {goals.carbs} g</span>
-              </div>
-              
-              <div className="w-full bg-neutral-100 rounded-full h-2 mb-2">
-                <div className={`h-2 rounded-full transition-all ${selectedTotals.carbs > goals.carbs ? 'bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.6)]' : 'bg-amber-500'}`} style={{ width: `${Math.min(100, goals.carbs > 0 ? (selectedTotals.carbs / goals.carbs) * 100 : 0)}%` }}></div>
-              </div>
-              
-              <div className="flex justify-between items-center text-xs">
-                <span className={`font-medium ${selectedTotals.carbs > goals.carbs ? 'text-red-500' : 'text-neutral-500'}`}>{Math.round(goals.carbs > 0 ? (selectedTotals.carbs / goals.carbs) * 100 : 0)}%</span>
-                <span className={selectedTotals.carbs > goals.carbs ? 'text-red-500 font-medium' : 'text-neutral-500'}>
-                  {selectedTotals.carbs > goals.carbs ? `${selectedTotals.carbs - goals.carbs}g over` : `${Math.max(0, goals.carbs - selectedTotals.carbs)}g left`}
-                </span>
-              </div>
-            </div>
 
-            <div className="bg-white p-5 rounded-2xl shadow-sm border border-neutral-100 flex flex-col">
-              <div className="flex items-center gap-2 text-sky-500 mb-3">
-                <Droplet size={18} />
-                <span className="text-sm font-medium">Fats</span>
-              </div>
-              
-              <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-3xl font-light tracking-tight">{selectedTotals.fats}</span>
-                <span className="text-sm text-neutral-400">/ {goals.fats} g</span>
-              </div>
-              
-              <div className="w-full bg-neutral-100 rounded-full h-2 mb-2">
-                <div className={`h-2 rounded-full transition-all ${selectedTotals.fats > goals.fats ? 'bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.6)]' : 'bg-sky-500'}`} style={{ width: `${Math.min(100, goals.fats > 0 ? (selectedTotals.fats / goals.fats) * 100 : 0)}%` }}></div>
-              </div>
-              
-              <div className="flex justify-between items-center text-xs">
-                <span className={`font-medium ${selectedTotals.fats > goals.fats ? 'text-red-500' : 'text-neutral-500'}`}>{Math.round(goals.fats > 0 ? (selectedTotals.fats / goals.fats) * 100 : 0)}%</span>
-                <span className={selectedTotals.fats > goals.fats ? 'text-red-500 font-medium' : 'text-neutral-500'}>
-                  {selectedTotals.fats > goals.fats ? `${selectedTotals.fats - goals.fats}g over` : `${Math.max(0, goals.fats - selectedTotals.fats)}g left`}
-                </span>
+              {/* Macro Cards Row */}
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { label: 'Carbs', current: selectedTotals.carbs, goal: goals.carbs, color: 'bg-amber-500', icon: Wheat, iconColor: 'text-amber-500' },
+                  { label: 'Protein', current: selectedTotals.protein, goal: goals.protein, color: 'bg-rose-500', icon: Beef, iconColor: 'text-rose-500' },
+                  { label: 'Fat', current: selectedTotals.fats, goal: goals.fats, color: 'bg-sky-500', icon: Droplet, iconColor: 'text-sky-500' },
+                ].map((macro) => (
+                  <div key={macro.label} className="bg-neutral-50 p-4 rounded-2xl border border-neutral-100">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-1.5">
+                        <macro.icon size={14} className={macro.iconColor} />
+                        <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider">{macro.label}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-baseline gap-1 mb-3">
+                      <span className="text-lg font-semibold">{macro.current}</span>
+                      <span className="text-[10px] text-neutral-400">/ {macro.goal}g</span>
+                    </div>
+                    <div className="w-full bg-neutral-200 rounded-full h-1.5 overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full transition-all duration-700 ${macro.current > macro.goal ? 'bg-red-500 animate-pulse' : macro.color}`} 
+                        style={{ width: `${Math.min(100, macro.goal > 0 ? (macro.current / macro.goal) * 100 : 0)}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
