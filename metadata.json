@@ -1,0 +1,5 @@
+{
+  "name": "MacroGPT",
+  "description": "A web-based nutrition and fitness tracking application that estimates macronutrients from natural language meal descriptions.",
+  "requestFramePermissions": []
+}
